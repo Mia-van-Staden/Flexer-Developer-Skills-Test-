@@ -16,12 +16,19 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   /**
    * Handles form submission for login
    */
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
     if (!name.trim() || !idNumber.trim()) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    // ID number validation 
+    if (idNumber.length !== 13 || isNaN(Number(idNumber))) {
+      setError('ID number must be exactly 13 digits');
       return;
     }
 
@@ -59,9 +66,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               type="text"
               id="idNumber"
               value={idNumber}
-              onChange={(e) => setIdNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= 13 && !isNaN(Number(value))) {
+                  setIdNumber(value);
+                }
+              }}
               style={styles.input}
               placeholder="Enter your ID number"
+              maxLength={13}
             />
           </div>
 
@@ -76,7 +89,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   );
 };
 
-// Simple inline styles for clean, minimal UI
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: 'flex',
