@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-card">
+            <h1>Survey Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="idNumber">ID Number:</label>
+                    <input type="text" id="idNumber" placeholder="Enter your ID number" maxlength="13" required>
+                </div>
+                <div id="loginError" class="error"></div>
+                <button type="submit">Start Survey</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Survey Page -->
+    <div id="surveyPage" class="page">
+        <div class="survey-card">
+            <div class="header">
+                <h1>Survey Questions</h1>
+                <p id="userInfo">Welcome!</p>
+                <button id="logoutBtn">Logout</button>
+            </div>
+
+            <form id="surveyForm">
+                <!-- Progress indicator -->
+                <div id="progress" class="progress">Question 1 of 10</div>
+                
+                <!-- Current question -->
+                <div id="questionContainer" class="question-group">
+                    <label id="questionLabel"></label>
+                    <div id="questionInput"></div>
+                </div>
+
+                <div id="surveyError" class="error"></div>
+                
+                <!-- Navigation buttons -->
+                <div class="navigation">
+                    <button type="button" id="backBtn" class="back-button" disabled>Back</button>
+                    <div class="right-buttons">
+                        <button type="button" id="resetBtn" class="reset-button">Reset</button>
+                        <button type="button" id="nextBtn">Next</button>
+                        <button type="submit" id="submitBtn" style="display: none;">Submit Survey</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="successPage" class="page">
+        <div class="success-card">
+            <h2>Thank You!</h2>
+            <p>Your survey has been submitted successfully.</p>
+            <button id="logoutSuccessBtn">Logout</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

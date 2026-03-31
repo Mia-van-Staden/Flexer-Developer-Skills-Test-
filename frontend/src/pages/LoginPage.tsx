@@ -10,19 +10,33 @@ interface LoginPageProps {
  */
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [idNumber, setIdNumber] = useState('');
   const [error, setError] = useState('');
 
   /**
+   * Validates email format
+   */
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  /**
    * Handles form submission for login
    */
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!name.trim() || !idNumber.trim()) {
+    if (!name.trim() || !email.trim() || !idNumber.trim()) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    // Email validation
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -36,7 +50,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     setError('');
     
     // Call parent component with user data
-    onLogin({ name: name.trim(), idNumber: idNumber.trim() });
+    onLogin({ 
+      name: name.trim(), 
+      email: email.trim(),
+      idNumber: idNumber.trim() 
+    });
   };
 
   return (
@@ -55,6 +73,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               onChange={(e) => setName(e.target.value)}
               style={styles.input}
               placeholder="Enter your name"
+            />
+          </div>
+          
+          <div style={styles.formGroup}>
+            <label style={styles.label} htmlFor="email">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              placeholder="Enter your email"
             />
           </div>
           

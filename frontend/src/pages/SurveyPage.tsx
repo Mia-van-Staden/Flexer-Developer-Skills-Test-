@@ -13,6 +13,7 @@ interface SurveyPageProps {
 const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -47,6 +48,44 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
   };
 
   /**
+   * moving back to previous question
+   */
+  const handleBack = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setError('');
+    }
+  };
+
+  /**
+   * moving on to nect question
+   */
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setError('');
+    }
+  };
+
+  /**
+   * Handles resetting the survey
+   */
+  const handleReset = async () => {
+    setAnswers({});
+    setCurrentQuestionIndex(0);
+    setError('');
+    setSubmitted(false);
+    
+    // Reload and reshuffle questions
+    try {
+      const fetchedQuestions = await fetchQuestions();
+      setQuestions(fetchedQuestions);
+    } catch (err) {
+      setError('Failed to reload questions. Please try again.');
+    }
+  };
+
+  /**
    * Validates all questions are answered and submits to API
    */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,9 +102,8 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
     setError('');
 
     try {
-      // Map user.name to email field as expected by API
       const response = await submitSurvey({
-        email: user.name,
+        email: user.email,
         idNumber: user.idNumber,
         answers,
       });
@@ -94,6 +132,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             style={styles.input}
             placeholder={`Enter ${question.text.toLowerCase()}`}
+            required
           />
         );
       case 'date':
@@ -103,6 +142,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             value={value}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             style={styles.input}
+            required
           />
         );
       default:
@@ -113,6 +153,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             style={styles.input}
             placeholder={`Enter ${question.text.toLowerCase()}`}
+            required
           />
         );
     }
@@ -152,24 +193,69 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
         </div>
 
         <form onSubmit={handleSubmit} style={styles.form}>
-          {questions.map((question) => (
-            <div key={question.id} style={styles.questionGroup}>
-              <label style={styles.label} htmlFor={`question-${question.id}`}>
-                {question.id}. {question.text}
+          {/* Progress indicator */}
+          <div style={styles.progress}>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </div>
+          
+          {/* Current question */}
+          {questions.length > 0 && (
+            <div key={questions[currentQuestionIndex].id} style={styles.questionGroup}>
+              <label style={styles.label} htmlFor={`question-${questions[currentQuestionIndex].id}`}>
+                {questions[currentQuestionIndex].id}. {questions[currentQuestionIndex].text}
               </label>
-              {renderInput(question)}
+              {renderInput(questions[currentQuestionIndex])}
             </div>
-          ))}
+          )}
 
           {error && <div style={styles.error}>{error}</div>}
           
-          <button 
-            type="submit" 
-            style={styles.button} 
-            disabled={submitting}
-          >
-            {submitting ? 'Submitting...' : 'Submit Survey'}
-          </button>
+          {/* Navigation buttons */}
+          <div style={styles.navigation}>
+            <button 
+              type="button" 
+              onClick={handleBack}
+              style={{
+                ...styles.button,
+                ...styles.backButton,
+                ...(currentQuestionIndex === 0 ? styles.disabledButton : {})
+              }}
+              disabled={currentQuestionIndex === 0}
+            >
+              Back
+            </button>
+            
+            <div style={styles.rightButtons}>
+              <button 
+                type="button" 
+                onClick={handleReset}
+                style={{
+                  ...styles.button,
+                  ...styles.resetButton
+                }}
+              >
+                Reset
+              </button>
+              
+              {currentQuestionIndex === questions.length - 1 ? (
+                <button 
+                  type="submit" 
+                  style={styles.button} 
+                  disabled={submitting}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Survey'}
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  onClick={handleNext}
+                  style={styles.button}
+                >
+                  Next
+                </button>
+              )}
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -241,6 +327,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '4px',
     fontSize: '1rem',
   },
+  radioGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  radioLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    cursor: 'pointer',
+    padding: '0.25rem',
+  },
+  radioInput: {
+    margin: 0,
+  },
   button: {
     padding: '0.75rem',
     backgroundColor: '#007bff',
@@ -270,6 +371,46 @@ const styles: { [key: string]: React.CSSProperties } = {
   successMessage: {
     color: '#666',
     marginBottom: '2rem',
+  },
+  progress: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: '0.9rem',
+    marginBottom: '1.5rem',
+    fontWeight: 'bold',
+  },
+  navigation: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '1rem',
+    marginTop: '1rem',
+  },
+  backButton: {
+    backgroundColor: '#6c757d',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc',
+    cursor: 'not-allowed',
+  },
+  userFields: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    marginBottom: '2rem',
+    padding: '1rem',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '6px',
+  },
+  fieldGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  rightButtons: {
+    display: 'flex',
+    gap: '1rem',
+  },
+  resetButton: {
+    backgroundColor: '#dc3545',
   },
 };
 

@@ -15,4 +15,5 @@ export interface SurveyResponse {
 export interface User {
   name: string;
   idNumber: string;
+  email: string;
 }
