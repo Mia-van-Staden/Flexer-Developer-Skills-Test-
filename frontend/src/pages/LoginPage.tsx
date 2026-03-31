@@ -58,12 +58,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.loginCard}>
-        <h1 style={styles.title}>Survey Login</h1>
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="name">
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="login-title">Survey Login</h1>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label className="form-label" htmlFor="name">
               Name:
             </label>
             <input
@@ -71,13 +71,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              style={styles.input}
+              className="form-input"
               placeholder="Enter your name"
             />
           </div>
           
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="email">
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">
               Email:
             </label>
             <input
@@ -85,13 +85,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={styles.input}
+              className="form-input"
               placeholder="Enter your email"
             />
           </div>
           
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="idNumber">
+          <div className="form-group">
+            <label className="form-label" htmlFor="idNumber">
               ID Number:
             </label>
             <input
@@ -104,80 +104,21 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   setIdNumber(value);
                 }
               }}
-              style={styles.input}
+              className="form-input"
               placeholder="Enter your ID number"
               maxLength={13}
             />
           </div>
 
-          {error && <div style={styles.error}>{error}</div>}
+          {error && <div className="error">{error}</div>}
           
-          <button type="submit" style={styles.button}>
+          <button type="submit" className="btn">
             Start Survey
           </button>
         </form>
       </div>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    fontFamily: 'Arial, sans-serif',
-  },
-  loginCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '400px',
-  },
-  title: {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '2rem',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '0.5rem',
-    color: '#555',
-    fontWeight: 'bold',
-  },
-  input: {
-    padding: '0.75rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '1rem',
-  },
-  button: {
-    padding: '0.75rem',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    marginTop: '1rem',
-  },
-  error: {
-    color: '#dc3545',
-    fontSize: '0.875rem',
-    textAlign: 'center',
-  },
 };
 
 export default LoginPage;

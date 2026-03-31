@@ -24,7 +24,8 @@ namespace SurveyAPI.Controllers
         [HttpGet("questions")]
         public IActionResult GetQuestions()
         {
-            var shuffled = questions.OrderBy(q => Guid.NewGuid()).ToList();
+            var random = new Random();
+            var shuffled = questions.OrderBy(q => random.Next()).ToList();
             return Ok(shuffled);
         }
 

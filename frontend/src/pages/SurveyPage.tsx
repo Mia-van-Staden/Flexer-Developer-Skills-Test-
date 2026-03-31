@@ -130,7 +130,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             type="number"
             value={value}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
-            style={styles.input}
+            className="form-input"
             placeholder={`Enter ${question.text.toLowerCase()}`}
             required
           />
@@ -141,7 +141,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             type="date"
             value={value}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
-            style={styles.input}
+            className="form-input"
             required
           />
         );
@@ -151,7 +151,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
             type="text"
             value={value}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
-            style={styles.input}
+            className="form-input"
             placeholder={`Enter ${question.text.toLowerCase()}`}
             required
           />
@@ -161,19 +161,19 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
 
   if (loading) {
     return (
-      <div style={styles.container}>
-        <div style={styles.loading}>Loading questions...</div>
+      <div className="survey-container">
+        <div className="loading">Loading questions...</div>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div style={styles.container}>
-        <div style={styles.successCard}>
-          <h2 style={styles.successTitle}>Thank You!</h2>
-          <p style={styles.successMessage}>Your survey has been submitted successfully.</p>
-          <button onClick={onLogout} style={styles.button}>
+      <div className="survey-container">
+        <div className="success-card">
+          <h2 className="success-title">Thank You!</h2>
+          <p className="success-message">Your survey has been submitted successfully.</p>
+          <button onClick={onLogout} className="btn">
             Logout
           </button>
         </div>
@@ -182,57 +182,50 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.surveyCard}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Survey Questions</h1>
-          <p style={styles.userInfo}>Welcome, {user.name}</p>
-          <button onClick={onLogout} style={styles.logoutButton}>
+    <div className="survey-container">
+      <div className="survey-card">
+        <div className="survey-header">
+          <h1 className="survey-title">Survey Questions</h1>
+          <p className="user-info">Welcome, {user.name}</p>
+          <button onClick={onLogout} className="logout-button">
             Logout
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <form onSubmit={handleSubmit} className="survey-form">
           {/* Progress indicator */}
-          <div style={styles.progress}>
+          <div className="progress-indicator">
             Question {currentQuestionIndex + 1} of {questions.length}
           </div>
           
           {/* Current question */}
           {questions.length > 0 && (
-            <div key={questions[currentQuestionIndex].id} style={styles.questionGroup}>
-              <label style={styles.label} htmlFor={`question-${questions[currentQuestionIndex].id}`}>
+            <div key={questions[currentQuestionIndex].id} className="question-group">
+              <label className="question-label" htmlFor={`question-${questions[currentQuestionIndex].id}`}>
                 {questions[currentQuestionIndex].id}. {questions[currentQuestionIndex].text}
               </label>
               {renderInput(questions[currentQuestionIndex])}
             </div>
           )}
 
-          {error && <div style={styles.error}>{error}</div>}
+          {error && <div className="error">{error}</div>}
           
           {/* Navigation buttons */}
-          <div style={styles.navigation}>
+          <div className="navigation">
             <button 
               type="button" 
               onClick={handleBack}
-              style={{
-                ...styles.button,
-                ...styles.backButton,
-                ...(currentQuestionIndex === 0 ? styles.disabledButton : {})
-              }}
+              className={`btn btn-back ${currentQuestionIndex === 0 ? 'disabled' : ''}`}
               disabled={currentQuestionIndex === 0}
             >
               Back
             </button>
             
-            <div style={styles.rightButtons}>
+            <div className="right-buttons">
               <button 
                 type="button" 
                 onClick={handleReset}
-                style={{
-                  ...styles.button,
-                  ...styles.resetButton
-                }}
+                className="btn btn-reset"
               >
                 Reset
               </button>
@@ -240,7 +233,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
               {currentQuestionIndex === questions.length - 1 ? (
                 <button 
                   type="submit" 
-                  style={styles.button} 
+                  className="btn" 
                   disabled={submitting}
                 >
                   {submitting ? 'Submitting...' : 'Submit Survey'}
@@ -249,7 +242,7 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
                 <button 
                   type="button" 
                   onClick={handleNext}
-                  style={styles.button}
+                  className="btn"
                 >
                   Next
                 </button>
@@ -260,158 +253,6 @@ const SurveyPage: React.FC<SurveyPageProps> = ({ user, onLogout }) => {
       </div>
     </div>
   );
-};
-
-// Simple inline styles for clean, minimal UI
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    fontFamily: 'Arial, sans-serif',
-    padding: '2rem',
-  },
-  loading: {
-    fontSize: '1.2rem',
-    color: '#666',
-  },
-  surveyCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '600px',
-  },
-  header: {
-    marginBottom: '2rem',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '1rem',
-  },
-  title: {
-    color: '#333',
-    marginBottom: '0.5rem',
-  },
-  userInfo: {
-    color: '#666',
-    margin: '0',
-  },
-  logoutButton: {
-    padding: '0.5rem 1rem',
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '1rem',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  },
-  questionGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '0.5rem',
-    color: '#555',
-    fontWeight: 'bold',
-  },
-  input: {
-    padding: '0.75rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '1rem',
-  },
-  radioGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
-  radioLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    cursor: 'pointer',
-    padding: '0.25rem',
-  },
-  radioInput: {
-    margin: 0,
-  },
-  button: {
-    padding: '0.75rem',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    marginTop: '1rem',
-  },
-  error: {
-    color: '#dc3545',
-    fontSize: '0.875rem',
-    textAlign: 'center',
-  },
-  successCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center',
-  },
-  successTitle: {
-    color: '#28a745',
-    marginBottom: '1rem',
-  },
-  successMessage: {
-    color: '#666',
-    marginBottom: '2rem',
-  },
-  progress: {
-    textAlign: 'center',
-    color: '#666',
-    fontSize: '0.9rem',
-    marginBottom: '1.5rem',
-    fontWeight: 'bold',
-  },
-  navigation: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '1rem',
-    marginTop: '1rem',
-  },
-  backButton: {
-    backgroundColor: '#6c757d',
-  },
-  disabledButton: {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed',
-  },
-  userFields: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    marginBottom: '2rem',
-    padding: '1rem',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '6px',
-  },
-  fieldGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  rightButtons: {
-    display: 'flex',
-    gap: '1rem',
-  },
-  resetButton: {
-    backgroundColor: '#dc3545',
-  },
 };
 
 export default SurveyPage;
