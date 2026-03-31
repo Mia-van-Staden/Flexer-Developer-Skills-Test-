@@ -1,6 +1,6 @@
 # Flexer Developer Skills Test - Survey Application
 
-A modern survey application with C# API backend and JavaScript frontend. This project demonstrates full-stack development capabilities with a responsive user interface, validation, and  API integration. The survey system collects user responses by randomizing questions and validating inputs. 
+A survey app for felexer practical development skills, resting api, react/JS front end, c# backend
 
 ## Features
 - 10 survey questions (3 number, 5 text, 2 date inputs)
